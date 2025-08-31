@@ -6,6 +6,15 @@ const GroupDashboard = () => {
   const [group, setGroup] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // Get user from localStorage
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   // Mock data for testing
   useEffect(() => {
@@ -19,7 +28,7 @@ const GroupDashboard = () => {
       tags: ["calculus", "advanced", "problem-solving", "exam-prep"],
       createdBy: "professor@university.edu",
       createdAt: new Date(Date.now() - 86400000),
-      members: ["user1", "user2", "user3", "currentUser"]
+      members: ["user1", "user2", "user3", "mock-user-id"] // Include the mock user ID
     };
 
     setTimeout(() => {
@@ -29,7 +38,7 @@ const GroupDashboard = () => {
   }, [groupId]);
 
   const isMember = () => {
-    return group?.members?.includes("currentUser") || false;
+    return user && group?.members?.includes(user.uid) || false;
   };
 
   const getMemberCount = () => {
