@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import Chat from './Chat';
+import UploadFile from './UploadFile';
+import MemberList from './MemberList';
 
 const GroupDashboard = () => {
   const { groupId } = useParams();
@@ -249,34 +252,20 @@ const GroupDashboard = () => {
 
         {activeTab === 'chat' && (
           <div className="card">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">💬 Group Chat</h3>
-            <div className="text-center py-12">
-              <div className="text-4xl mb-4">💬</div>
-              <p className="text-gray-600 mb-4">Chat functionality will be available soon!</p>
-              <p className="text-sm text-gray-500">Real-time messaging is coming in the next update.</p>
-            </div>
+            <Chat groupId={groupId} />
           </div>
         )}
 
         {activeTab === 'resources' && (
           <div className="card">
             <h3 className="text-xl font-semibold text-gray-800 mb-4">📁 Shared Resources</h3>
-            <div className="text-center py-12">
-              <div className="text-4xl mb-4">📁</div>
-              <p className="text-gray-600 mb-4">File sharing functionality will be available soon!</p>
-              <p className="text-sm text-gray-500">Upload and download features are coming in the next update.</p>
-            </div>
+            <UploadFile groupId={groupId} />
           </div>
         )}
 
         {activeTab === 'members' && (
           <div className="card">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">👥 Group Members</h3>
-            <div className="text-center py-12">
-              <div className="text-4xl mb-4">👥</div>
-              <p className="text-gray-600 mb-4">Member management will be available soon!</p>
-              <p className="text-sm text-gray-500">View and manage group members in the next update.</p>
-            </div>
+            <MemberList groupId={groupId} />
           </div>
         )}
       </div>
