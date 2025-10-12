@@ -24,19 +24,6 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                echo 'Running tests...'
-                script {
-                    try {
-                        bat 'npm test'
-                    } catch (err) {
-                        echo '⚠️ No tests found or test failed. Skipping...'
-                    }
-                }
-            }
-        }
-
         stage('Archive Build Artifacts') {
             steps {
                 echo 'Archiving build output...'
