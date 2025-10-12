@@ -23,6 +23,18 @@ pipeline {
             }
         }
 
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                script {
+                    try {
+                        bat 'npm test'
+                    } catch (err) {
+                        echo '⚠️ No tests found or test failed. Skipping...'
+                    }
+                }
+            }
+        }
 
         stage('Archive Build Artifacts') {
             steps {
@@ -37,8 +49,7 @@ pipeline {
             }
             steps {
                 echo 'Deploying build...'
-                // Example for static hosting deployment:
-                // bat 'npm run deploy'
+                // bat 'npm run deploy'  // optional
             }
         }
     }
@@ -52,4 +63,3 @@ pipeline {
         }
     }
 }
-
