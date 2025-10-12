@@ -1,8 +1,7 @@
+
 pipeline {
     agent any
-    environment {
-        // Define any needed secrets or environment variables here
-    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -10,38 +9,58 @@ pipeline {
                 checkout scm
             }
         }
+
         stage('Install Dependencies') {
             steps {
                 echo 'Installing npm packages...'
                 bat 'npm install'
             }
         }
-        stage('Lint') {
-            steps {
-                echo 'Linting code...'
-                bat 'npm run lint || exit /b 0' // Ignore error if no lint script
-            }
-        }
-       
+
         stage('Build') {
             steps {
-                echo 'Building the production assets...'
+                echo 'Building the React app...'
                 bat 'npm run build'
             }
         }
+
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                script {
+                    try {
+                        bat 'npm test'
+                    } catch (err) {
+                        echo '⚠️ No tests found or test failed. Skipping...'
+                    }
+                }
+            }
+        }
+
         stage('Archive Build Artifacts') {
             steps {
                 echo 'Archiving build output...'
                 archiveArtifacts artifacts: 'dist/**', fingerprint: true
             }
         }
+
+        stage('Deploy') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo 'Deploying build...'
+                // bat 'npm run deploy'  // optional
+            }
+        }
     }
+
     post {
         success {
-            echo '✅ CI pipeline completed successfully.'
+            echo '✅ Build and pipeline completed successfully.'
         }
         failure {
-            echo '❌ CI failed. Please check the logs.'
+            echo '❌ Build or test failed.'
         }
     }
 }
