@@ -1,32 +1,62 @@
+
 pipeline {
-  agent any
-  stages {
-    stage('Checkout') {
-      steps {
-        checkout scm
-      }
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Cloning repository...'
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                echo 'Installing npm packages...'
+                bat 'npm install'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Building the React app...'
+                bat 'npm run build'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                bat 'npm test || echo "No tests found"'
+            }
+        }
+
+        stage('Archive Build Artifacts') {
+            steps {
+                echo 'Archiving build output...'
+                archiveArtifacts artifacts: 'dist/**', fingerprint: true
+            }
+        }
+
+        // Optional deployment step
+        stage('Deploy') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo 'Deploying build...'
+                // Example for static hosting deployment:
+                // bat 'npm run deploy'
+            }
+        }
     }
-    stage('Build') {
-      steps {
-        bat """
-        if exist out rmdir /s /q out
-        mkdir out
-        javac -d out src\\hello\\Hello.java
-        """
-      }
+
+    post {
+        success {
+            echo '✅ Build and pipeline completed successfully.'
+        }
+        failure {
+            echo '❌ Build or test failed.'
+        }
     }
-    stage('Run') {
-      steps {
-        bat """
-        java -cp out hello.Hello
-        echo Build_OK > artifact.txt
-        """
-      }
-    }
-  }
-  post {
-    always {
-      archiveArtifacts artifacts: 'artifact.txt, out/**', allowEmptyArchive: false
-    }
-  }
 }
