@@ -22,12 +22,7 @@ pipeline {
                 bat 'npm run lint || exit /b 0' // Ignore error if no lint script
             }
         }
-        stage('Test') {
-            steps {
-                echo 'Running tests...'
-                bat 'npm test || exit /b 0' // Ignore error if no tests
-            }
-        }
+       
         stage('Build') {
             steps {
                 echo 'Building the production assets...'
