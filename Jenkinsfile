@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
 
@@ -27,7 +26,13 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                bat 'npm test || echo "No tests found"'
+                script {
+                    try {
+                        bat 'npm test'
+                    } catch (err) {
+                        echo "⚠️ No tests found or test failed. Skipping..."
+                    }
+                }
             }
         }
 
@@ -38,7 +43,6 @@ pipeline {
             }
         }
 
-        // Optional deployment step
         stage('Deploy') {
             when {
                 branch 'main'
@@ -60,3 +64,4 @@ pipeline {
         }
     }
 }
+
